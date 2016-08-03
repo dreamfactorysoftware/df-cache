@@ -21,9 +21,9 @@ class CreateRedisConfigTable extends Migration
                 $t->string('host');
                 $t->integer('port')->nullable();
                 $t->longText('password')->nullable();
-                $t->integer('database_index')->nullable();
-                $t->integer('default_ttl');
-                $t->text('options')->nullable();
+                $t->integer('database_index')->default(0);
+                $t->integer('default_ttl')->default(300);
+                $t->mediumText('options')->nullable();
             }
         );
     }

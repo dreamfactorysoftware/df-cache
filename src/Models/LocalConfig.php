@@ -10,8 +10,8 @@ class LocalConfig extends BaseServiceConfigModel
     protected $fillable = ['service_id', 'store', 'default_ttl'];
 
     protected $casts = [
-        'service_id'     => 'integer',
-        'default_ttl'    => 'integer'
+        'service_id'  => 'integer',
+        'default_ttl' => 'integer'
     ];
 
     /**
@@ -28,7 +28,7 @@ class LocalConfig extends BaseServiceConfigModel
                 $stores = \Config::get('cache.stores');
 
                 foreach ($stores as $key => $disk) {
-                    if(substr($key, 0, 4) === 'dfe-'){
+                    if (substr($key, 0, 4) === 'dfe-') {
                         continue;
                     }
                     $default = false;

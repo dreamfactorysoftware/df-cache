@@ -18,6 +18,20 @@ class RedisConfig extends BaseServiceConfigModel
 
     protected $encrypted = ['password'];
 
+    /** {@inheritdoc} */
+    public function fromJson($value, $asObject = false)
+    {
+        $value = json_decode($value, !$asObject);
+
+        if (is_array($value) && isset($value['ssl'])) {
+            if (!is_array($value['ssl'])) {
+                $value['ssl'] = json_decode($value['ssl'], true);
+            }
+        }
+
+        return $value;
+    }
+
     /**
      * @param array $schema
      */
