@@ -7,6 +7,7 @@ use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Utility\ResponseFactory;
 use Illuminate\Cache\Repository;
+use DreamFactory\Library\Utility\Inflector;
 
 abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
 {
@@ -179,5 +180,339 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
             default:
                 return $this->request->getPayloadData();
         }
+    }
+
+    /** {@inheritdoc} */
+    public function getApiDocInfo()
+    {
+        $base = parent::getApiDocInfo();
+        $name = strtolower($this->name);
+        $capitalized = Inflector::camelize($this->name);
+
+        $base['paths'] = [
+            '/' . $name => [
+                'post' => [
+                    'tags' => [$name],
+                    'summary' => 'create' . $capitalized . 'Keys() - Create one or more keys in cache storage',
+                    'operationId' => 'create' . $capitalized . 'Keys',
+                    'x-publishedEvents' => [
+                        $name . '.create'
+                    ],
+                    'consumes'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'produces'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'parameters'        => [
+                        [
+                            'name'        => 'ttl',
+                            'type'        => 'integer',
+                            'in'          => 'query',
+                            'description' => 'A TTL (Time To Live) value in minutes for your cache.',
+                            'required'    => false
+                        ],
+                        [
+                            'name'        => 'forever',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'description' =>
+                                'Setting this to true will never expire your key/value pair from cache storage.',
+                            'required'    => false,
+                            'default'     => false
+                        ]
+                    ],
+                    'responses'         => [
+                        '201'     => [
+                            'description' => 'Success',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    'success' => [
+                                        'type' => 'boolean'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       => 'No keys will be created if any of the supplied keys exist in cache. ' .
+                        'Use PUT to replace an existing key(s). ' .
+                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
+                ],
+                'put' => [
+                    'tags' => [$name],
+                    'summary' => 'replace' . $capitalized . 'Keys() - Replace one or more keys in cache storage',
+                    'operationId' => 'replace' . $capitalized . 'Keys',
+                    'x-publishedEvents' => [
+                        $name . '.update'
+                    ],
+                    'consumes'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'produces'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'parameters'        => [
+                        [
+                            'name'        => 'ttl',
+                            'type'        => 'integer',
+                            'in'          => 'query',
+                            'description' => 'A TTL (Time To Live) value in minutes for your cache.',
+                            'required'    => false
+                        ],
+                        [
+                            'name'        => 'forever',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'description' =>
+                                'Setting this to true will never expire your key/value pair from cache storage.',
+                            'required'    => false,
+                            'default'     => false
+                        ]
+                    ],
+                    'responses'         => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    'success' => [
+                                        'type' => 'boolean'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       => 'All existing keys will be replaced by supplied keys. ' .
+                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
+                ]
+            ],
+            '/' . $name . '/{key_name}' => [
+                'parameters' => [
+                    [
+                        'name'        => 'key_name',
+                        'description' => 'The name of the key you want to retrieve from cache storage',
+                        'type'        => 'string',
+                        'in'          => 'path',
+                        'required'    => true,
+                    ],
+                ],
+                'get'        => [
+                    'tags'              => [$name],
+                    'summary'           => 'get' . $capitalized . 'Key() - Retrieve one key from cache.',
+                    'operationId'       => 'get' . $capitalized . 'Key',
+                    'x-publishedEvents' => [
+                        $name . '.{key_name}.read'
+                    ],
+                    'consumes'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'produces'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'parameters'        => [
+                        [
+                            'name'        => 'default',
+                            'type'        => 'string',
+                            'in'          => 'query',
+                            'description' => 'A default value to return if key is not found in cache storage.',
+                            'required'    => false
+                        ],
+                        [
+                            'name'        => 'clear',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'description' =>
+                                'Setting this to true will delete the key/value pair from cache storage upon reading it.',
+                            'required'    => false,
+                            'default'     => false
+                        ]
+                    ],
+                    'responses'         => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => ['type' => 'object']
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       => 'Use the \'clear\' parameter to retrieve and forget a key from cache. ' .
+                        'Use the \'default\' parameter to return a default value if key is not found.'
+                ],
+                'post'       => [
+                    'tags'              => [$name],
+                    'summary'           => 'create' . $capitalized . 'Key() - Create one key in cache.',
+                    'operationId'       => 'create' . $capitalized . 'Key',
+                    'x-publishedEvents' => [
+                        $name . '.{key_name}.create'
+                    ],
+                    'consumes'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'produces'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'parameters'        => [
+                        [
+                            'name'        => 'ttl',
+                            'type'        => 'integer',
+                            'in'          => 'query',
+                            'description' => 'A TTL (Time To Live) value in minutes for your cache.',
+                            'required'    => false
+                        ],
+                        [
+                            'name'        => 'forever',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'description' =>
+                                'Setting this to true will never expire your key/value pair from cache storage.',
+                            'required'    => false,
+                            'default'     => false
+                        ]
+                    ],
+                    'responses'         => [
+                        '201'     => [
+                            'description' => 'Success',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    '{key_name}' => [
+                                        'type' => 'object'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       => 'You can only create a key if the key does not exist in cache. ' .
+                        'Use PUT to replace an existing key. ' .
+                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
+                ],
+                'put'        => [
+                    'tags'              => [$name],
+                    'summary'           => 'replace' . $capitalized . 'Key() - Replace one key from cache.',
+                    'operationId'       => 'replace' . $capitalized . 'Key',
+                    'x-publishedEvents' => [
+                        $name . '.{key_name}.update'
+                    ],
+                    'consumes'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'produces'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'parameters'        => [
+                        [
+                            'name'        => 'ttl',
+                            'type'        => 'integer',
+                            'in'          => 'query',
+                            'description' => 'A TTL (Time To Live) value in minutes for your cache.',
+                            'required'    => false
+                        ],
+                        [
+                            'name'        => 'forever',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'description' =>
+                                'Setting this to true will never expire your key/value pair from cache storage.',
+                            'required'    => false,
+                            'default'     => false
+                        ]
+                    ],
+                    'responses'         => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    '{key_name}' => [
+                                        'type' => 'object'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
+                ],
+                'patch'      => [
+                    'tags'              => [$name],
+                    'summary'           => 'update' . $capitalized . 'Key() - Update one key in cache.',
+                    'operationId'       => 'update' . $capitalized . 'Key',
+                    'x-publishedEvents' => [
+                        $name . '.{key_name}.update'
+                    ],
+                    'consumes'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'produces'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'parameters'        => [
+                        [
+                            'name'        => 'ttl',
+                            'type'        => 'integer',
+                            'in'          => 'query',
+                            'description' => 'A TTL (Time To Live) value in minutes for your cache.',
+                            'required'    => false
+                        ],
+                        [
+                            'name'        => 'forever',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'description' =>
+                                'Setting this to true will never expire your key/value pair from cache storage.',
+                            'required'    => false,
+                            'default'     => false
+                        ]
+                    ],
+                    'responses'         => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    '{key_name}' => [
+                                        'type' => 'object'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
+                ],
+                'delete'     => [
+                    'tags'              => [$name],
+                    'summary'           => 'delete' . $capitalized . 'Key() - Delete one key from cache.',
+                    'operationId'       => 'delete' . $capitalized . 'Key',
+                    'x-publishedEvents' => [
+                        $name . '.{key_name}.delete'
+                    ],
+                    'consumes'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'produces'          => ['application/json', 'application/xml', 'text/csv', 'text/plain'],
+                    'responses'         => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    'success' => [
+                                        'type' => 'boolean'
+                                    ]
+                                ]
+                            ]
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       => 'You can only delete one key at a time.'
+                ],
+            ],
+        ];
+
+        return $base;
     }
 }
