@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRedisConfigTable extends Migration
+class CreateMemcachedConfigTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,14 @@ class CreateRedisConfigTable extends Migration
      */
     public function up()
     {
-        //Create Redis config table
+        //Create Memcached config table
         Schema::create(
-            'redis_config',
+            'memcached_config',
             function (Blueprint $t){
                 $t->integer('service_id')->unsigned()->primary();
                 $t->foreign('service_id')->references('id')->on('service')->onDelete('cascade');
                 $t->string('host');
-                $t->integer('port')->default(6379);
-                $t->longText('password')->nullable();
-                $t->integer('database_index')->default(0);
+                $t->integer('port')->default(11211);
                 $t->integer('default_ttl')->default(300);
                 $t->mediumText('options')->nullable();
             }
@@ -35,7 +33,7 @@ class CreateRedisConfigTable extends Migration
      */
     public function down()
     {
-        //Drop Redis config table if exists
-        Schema::dropIfExists('redis_config');
+        //Drop Memcached config table if exists
+        Schema::dropIfExists('memcached_config');
     }
 }
