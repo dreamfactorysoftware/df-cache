@@ -190,11 +190,13 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
         $capitalized = Inflector::camelize($this->name);
 
         $base['paths'] = [
-            '/' . $name => [
+            '/' . $name                 => [
                 'post' => [
-                    'tags' => [$name],
-                    'summary' => 'create' . $capitalized . 'Keys() - Create one or more keys in cache storage',
-                    'operationId' => 'create' . $capitalized . 'Keys',
+                    'tags'              => [$name],
+                    'summary'           => 'create' .
+                        $capitalized .
+                        'Keys() - Create one or more keys in cache storage',
+                    'operationId'       => 'create' . $capitalized . 'Keys',
                     'x-publishedEvents' => [
                         $name . '.create'
                     ],
@@ -216,6 +218,20 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
                                 'Setting this to true will never expire your key/value pair from cache storage.',
                             'required'    => false,
                             'default'     => false
+                        ],
+                        [
+                            'name'        => 'body',
+                            'description' => 'Content - key/value pair.',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    '{key_name}' => [
+                                        'type'        => 'string',
+                                        'description' => 'Value for your key goes here. You should replace {key_name} with your key.'
+                                    ]
+                                ]
+                            ],
+                            'in'          => 'body',
                         ]
                     ],
                     'responses'         => [
@@ -240,10 +256,12 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
                         'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
                         'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
                 ],
-                'put' => [
-                    'tags' => [$name],
-                    'summary' => 'replace' . $capitalized . 'Keys() - Replace one or more keys in cache storage',
-                    'operationId' => 'replace' . $capitalized . 'Keys',
+                'put'  => [
+                    'tags'              => [$name],
+                    'summary'           => 'replace' .
+                        $capitalized .
+                        'Keys() - Replace one or more keys in cache storage',
+                    'operationId'       => 'replace' . $capitalized . 'Keys',
                     'x-publishedEvents' => [
                         $name . '.update'
                     ],
@@ -265,6 +283,20 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
                                 'Setting this to true will never expire your key/value pair from cache storage.',
                             'required'    => false,
                             'default'     => false
+                        ],
+                        [
+                            'name'        => 'body',
+                            'description' => 'Content - key/value pair.',
+                            'schema'      => [
+                                'type'       => 'object',
+                                'properties' => [
+                                    '{key_name}' => [
+                                        'type'        => 'string',
+                                        'description' => 'Value for your key goes here. You should replace {key_name} with your key.'
+                                    ]
+                                ]
+                            ],
+                            'in'          => 'body',
                         ]
                     ],
                     'responses'         => [
@@ -364,6 +396,14 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
                                 'Setting this to true will never expire your key/value pair from cache storage.',
                             'required'    => false,
                             'default'     => false
+                        ],
+                        [
+                            'name'        => 'body',
+                            'description' => 'Content - plain text or json string',
+                            'schema'      => [
+                                'type'       => 'string'
+                            ],
+                            'in'          => 'body',
                         ]
                     ],
                     'responses'         => [
@@ -413,6 +453,14 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
                                 'Setting this to true will never expire your key/value pair from cache storage.',
                             'required'    => false,
                             'default'     => false
+                        ],
+                        [
+                            'name'        => 'body',
+                            'description' => 'Content - plain text or json string',
+                            'schema'      => [
+                                'type'       => 'string'
+                            ],
+                            'in'          => 'body',
                         ]
                     ],
                     'responses'         => [
@@ -460,6 +508,14 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
                                 'Setting this to true will never expire your key/value pair from cache storage.',
                             'required'    => false,
                             'default'     => false
+                        ],
+                        [
+                            'name'        => 'body',
+                            'description' => 'Content - plain text or json string',
+                            'schema'      => [
+                                'type'       => 'string'
+                            ],
+                            'in'          => 'body',
                         ]
                     ],
                     'responses'         => [
