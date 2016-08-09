@@ -63,7 +63,7 @@ class RedisConfig extends BaseServiceConfigModel
                     ];
                 $schema['description'] =
                     'An array of options for the Redis connection.' .
-                    ' For further details, see https://github.com/nrk/predis/wiki/Quick-tour#connection';
+                    ' For further details, see <a>https://github.com/nrk/predis/wiki/Quick-tour#connection</a>';
                 break;
             case 'default_ttl':
                 $schema['label'] = 'Default TTL';

@@ -21,7 +21,6 @@ class CreateMemcachedConfigTable extends Migration
                 $t->string('host');
                 $t->integer('port')->default(11211);
                 $t->integer('default_ttl')->default(300);
-                $t->mediumText('options')->nullable();
             }
         );
     }

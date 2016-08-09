@@ -33,15 +33,6 @@ class MemcachedConfig extends BaseServiceConfigModel
                 $schema['default'] = 11211;
                 $schema['description'] = 'Memcached Port number';
                 break;
-            case 'options':
-                $schema['type'] = 'object';
-                $schema['object'] =
-                    [
-                        'key'   => ['label' => 'Name', 'type' => 'string'],
-                        'value' => ['label' => 'Value', 'type' => 'string']
-                    ];
-                $schema['description'] = 'An array of options for the Memcached connection.';
-                break;
             case 'default_ttl':
                 $schema['label'] = 'Default TTL';
                 $schema['default'] = 300;
