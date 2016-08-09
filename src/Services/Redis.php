@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\Cache\Services;
 
+use DreamFactory\Core\Utility\Session;
 use Illuminate\Redis\Database;
 use Illuminate\Cache\RedisStore;
 
@@ -12,6 +13,7 @@ class Redis extends BaseService
     /** {@inheritdoc} */
     protected function setStore($config)
     {
+        Session::replaceLookups($config, true);
         $host = array_get($config, 'host');
         $port = array_get($config, 'port', static::PORT);
         $databaseIndex = array_get($config, 'database_index', 0);

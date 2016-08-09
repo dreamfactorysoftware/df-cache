@@ -3,6 +3,7 @@ namespace DreamFactory\Core\Cache\Services;
 
 use Illuminate\Cache\MemcachedConnector;
 use Illuminate\Cache\MemcachedStore;
+use DreamFactory\Core\Utility\Session;
 
 class Memcached extends BaseService
 {
@@ -11,6 +12,7 @@ class Memcached extends BaseService
 
     protected function setStore($config)
     {
+        Session::replaceLookups($config, true);
         $host = array_get($config, 'host');
         $port = array_get($config, 'port', static::PORT);
         $options = array_get($config, 'options');
