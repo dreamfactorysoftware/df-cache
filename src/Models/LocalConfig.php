@@ -42,6 +42,7 @@ class LocalConfig extends BaseServiceConfigModel
                     ];
                 }
 
+                $schema['default'] = $defaultStore;
                 $schema['type'] = 'picklist';
                 $schema['description'] = 'Select a store to use for local cache service.';
                 $schema['values'] = $values;
