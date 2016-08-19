@@ -183,11 +183,11 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
     }
 
     /** {@inheritdoc} */
-    public function getApiDocInfo()
+    public static function getApiDocInfo($service)
     {
-        $base = parent::getApiDocInfo();
-        $name = strtolower($this->name);
-        $capitalized = Inflector::camelize($this->name);
+        $base = parent::getApiDocInfo($service);
+        $name = strtolower($service->name);
+        $capitalized = Inflector::camelize($service->name);
 
         $base['paths'] = [
             '/' . $name                 => [
