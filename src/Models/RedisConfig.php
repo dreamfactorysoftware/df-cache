@@ -18,6 +18,8 @@ class RedisConfig extends BaseServiceConfigModel
 
     protected $encrypted = ['password'];
 
+    protected $protected = ['password'];
+
     /** {@inheritdoc} */
     public function fromJson($value, $asObject = false)
     {
