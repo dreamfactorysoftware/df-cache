@@ -2,8 +2,8 @@
 namespace DreamFactory\Core\Cache\Services;
 
 use DreamFactory\Core\Utility\Session;
-use Illuminate\Redis\Database;
 use Illuminate\Cache\RedisStore;
+use Illuminate\Redis\RedisManager;
 
 class Redis extends BaseService
 {
@@ -34,7 +34,7 @@ class Redis extends BaseService
             $server['default'] = array_merge($options, $server['default']);
         }
 
-        $redisDatabase = new Database($server);
+        $redisDatabase = new RedisManager('predis', $server);
         $redisStore = new RedisStore($redisDatabase);
         $this->store = \Cache::repository($redisStore);
     }
