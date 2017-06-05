@@ -5,11 +5,11 @@ use DreamFactory\Core\Contracts\ServiceResponseInterface;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
+use DreamFactory\Core\Services\BaseRestService;
 use DreamFactory\Core\Utility\ResponseFactory;
 use Illuminate\Cache\Repository;
-use DreamFactory\Library\Utility\Inflector;
 
-abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
+abstract class BaseService extends BaseRestService
 {
     /** @var Repository */
     protected $store = null;
@@ -187,7 +187,7 @@ abstract class BaseService extends \DreamFactory\Core\Services\BaseRestService
     {
         $base = parent::getApiDocInfo($service);
         $name = strtolower($service->name);
-        $capitalized = Inflector::camelize($service->name);
+        $capitalized = camelize($service->name);
 
         $base['paths'] = [
             '/' . $name                 => [
