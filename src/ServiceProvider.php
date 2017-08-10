@@ -7,7 +7,6 @@ use DreamFactory\Core\Cache\Models\RedisConfig;
 use DreamFactory\Core\Cache\Services\Local;
 use DreamFactory\Core\Cache\Services\Memcached;
 use DreamFactory\Core\Cache\Services\Redis;
-use DreamFactory\Core\Components\ServiceDocBuilder;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
 use DreamFactory\Core\Services\ServiceManager;
 use DreamFactory\Core\Services\ServiceType;
@@ -15,8 +14,6 @@ use DreamFactory\Core\Services\ServiceType;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    use ServiceDocBuilder;
-
     public function register()
     {
         // Add our service types.
@@ -28,9 +25,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     'description'    => 'Local Cache service.',
                     'group'          => ServiceTypeGroups::CACHE,
                     'config_handler' => LocalConfig::class,
-                    'default_api_doc' => function ($service) {
-                        return $this->buildServiceDoc($service->id, Local::getApiDocInfo($service));
-                    },
                     'factory'        => function ($config){
                         return new Local($config);
                     },
@@ -43,9 +37,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     'description'    => 'Memcached Cache service.',
                     'group'          => ServiceTypeGroups::CACHE,
                     'config_handler' => MemcachedConfig::class,
-                    'default_api_doc' => function ($service) {
-                        return $this->buildServiceDoc($service->id, Memcached::getApiDocInfo($service));
-                    },
                     'factory'        => function ($config){
                         return new Memcached($config);
                     },
@@ -58,9 +49,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     'description'    => 'Redis Cache service.',
                     'group'          => ServiceTypeGroups::CACHE,
                     'config_handler' => RedisConfig::class,
-                    'default_api_doc' => function ($service) {
-                        return $this->buildServiceDoc($service->id, Redis::getApiDocInfo($service));
-                    },
                     'factory'        => function ($config){
                         return new Redis($config);
                     },
