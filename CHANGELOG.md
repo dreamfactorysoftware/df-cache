@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2017-08-17
+### Changed
+- Reworking API doc usage and generation
+
 ## [0.8.0] - 2017-07-27
 - Dependency changes only
 
@@ -34,7 +38,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.1.0 - 2016-08-11
 First official release of this library.
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-cache/compare/0.8.0..HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-cache/compare/0.9.0..HEAD
+[0.9.0]: https://github.com/dreamfactorysoftware/df-cache/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/dreamfactorysoftware/df-cache/compare/0.7.1...0.8.0
 [0.7.1]: https://github.com/dreamfactorysoftware/df-cache/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/dreamfactorysoftware/df-cache/compare/0.6.0...0.7.0
