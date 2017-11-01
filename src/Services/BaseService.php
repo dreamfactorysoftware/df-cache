@@ -58,7 +58,7 @@ abstract class BaseService extends BaseRestService
 
         $default = $this->request->getParameter('default');
         if (false === $this->store->has($key) && empty($default)) {
-            throw new NotFoundException('No value found for key [' . $key . ']');
+            throw new NotFoundException("No value found for key '$key'.");
         }
 
         $pull = $this->request->getParameterAsBool('clear', $this->request->getParameterAsBool('pull'));
@@ -115,9 +115,7 @@ abstract class BaseService extends BaseRestService
         $payload = $this->getPayloadData();
 
         if (!empty($key) && true === $this->store->has($key)) {
-            throw new BadRequestException(
-                'Key [' . $key . '] already exists in cache. Use PUT to update existing key.'
-            );
+            throw new BadRequestException("Key '$key' already exists in cache. Use PUT to update existing key.");
         }
 
         if (is_array($payload) && empty($key)) {
@@ -208,16 +206,7 @@ abstract class BaseService extends BaseRestService
                         ],
                     ],
                     'requestBody' => [
-                        'description' => 'Content - key/value pair.',
-                        'schema'      => [
-                            'type'       => 'object',
-                            'properties' => [
-                                '{key_name}' => [
-                                    'type'        => 'string',
-                                    'description' => 'Value for your key goes here. You should replace {key_name} with your key.'
-                                ]
-                            ]
-                        ],
+                        '$ref' => '#/components/requestBodies/CacheRequest'
                     ],
                     'responses'   => [
                         '201' => ['$ref' => '#/components/responses/Success']
@@ -245,16 +234,7 @@ abstract class BaseService extends BaseRestService
                         ],
                     ],
                     'requestBody' => [
-                        'description' => 'Content - key/value pair.',
-                        'schema'      => [
-                            'type'       => 'object',
-                            'properties' => [
-                                '{key_name}' => [
-                                    'type'        => 'string',
-                                    'description' => 'Value for your key goes here. You should replace {key_name} with your key.'
-                                ]
-                            ]
-                        ],
+                        '$ref' => '#/components/requestBodies/CacheRequest'
                     ],
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/Success']
@@ -293,14 +273,7 @@ abstract class BaseService extends BaseRestService
                         ]
                     ],
                     'responses'   => [
-                        '200' => [
-                            'description' => 'Success',
-                            'content'     => [
-                                'application/json' => [
-                                    'schema' => ['type' => 'object']
-                                ]
-                            ]
-                        ],
+                        '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
                     'description' => 'Use the \'clear\' parameter to retrieve and forget a key from cache. ' .
                         'Use the \'default\' parameter to return a default value if key is not found.'
@@ -324,27 +297,10 @@ abstract class BaseService extends BaseRestService
                         ],
                     ],
                     'requestBody' => [
-                        'description' => 'Content - plain text or json string',
-                        'schema'      => [
-                            'type' => 'string'
-                        ],
+                        '$ref' => '#/components/requestBodies/CacheKeyRequest'
                     ],
                     'responses'   => [
-                        '201' => [
-                            'description' => 'Success',
-                            'content'     => [
-                                'application/json' => [
-                                    'schema' => [
-                                        'type'       => 'object',
-                                        'properties' => [
-                                            '{key_name}' => [
-                                                'type' => 'object'
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
+                        '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
                     'description' => 'You can only create a key if the key does not exist in cache. ' .
                         'Use PUT to replace an existing key. ' .
@@ -370,27 +326,10 @@ abstract class BaseService extends BaseRestService
                         ],
                     ],
                     'requestBody' => [
-                        'description' => 'Content - plain text or json string',
-                        'schema'      => [
-                            'type' => 'string'
-                        ],
+                        '$ref' => '#/components/requestBodies/CacheKeyRequest'
                     ],
                     'responses'   => [
-                        '200' => [
-                            'description' => 'Success',
-                            'content'     => [
-                                'application/json' => [
-                                    'schema' => [
-                                        'type'       => 'object',
-                                        'properties' => [
-                                            '{key_name}' => [
-                                                'type' => 'object'
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
+                        '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
                     'description' => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
                         'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
@@ -413,27 +352,10 @@ abstract class BaseService extends BaseRestService
                         ],
                     ],
                     'requestBody' => [
-                        'description' => 'Content - plain text or json string',
-                        'schema'      => [
-                            'type' => 'string'
-                        ],
+                        '$ref' => '#/components/requestBodies/CacheKeyRequest'
                     ],
                     'responses'   => [
-                        '200' => [
-                            'description' => 'Success',
-                            'content'     => [
-                                'application/json' => [
-                                    'schema' => [
-                                        'type'       => 'object',
-                                        'properties' => [
-                                            '{key_name}' => [
-                                                'type' => 'object'
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ],
+                        '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
                     'description' => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
                         'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
@@ -450,5 +372,80 @@ abstract class BaseService extends BaseRestService
         ];
 
         return $base;
+    }
+
+    protected function getApiDocRequests()
+    {
+        return [
+            'CacheRequest'    => [
+                'description' => 'Content - key/value pair.',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => ['$ref' => '#/components/schemas/KeyValueObject']
+                    ],
+                    'application/xml' => [
+                        'schema' => ['$ref' => '#/components/schemas/KeyValueObject']
+                    ],
+                ],
+            ],
+            'CacheKeyRequest' => [
+                'description' => 'Content - plain text or json string',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => ['type' => 'string'],
+                    ],
+                    'application/xml' => [
+                        'schema' => ['type' => 'string'],
+                    ],
+                ],
+            ]
+        ];
+    }
+
+    protected function getApiDocResponses()
+    {
+        return [
+            'CacheResponse'    => [
+                'description' => 'Content - key/value pair.',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => ['$ref' => '#/components/schemas/KeyValueObject']
+                    ],
+                    'application/xml'  => [
+                        'schema' => ['$ref' => '#/components/schemas/KeyValueObject']
+                    ],
+                ],
+            ],
+            'CacheKeyResponse' => [
+                'description' => 'Content - plain text or json string',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                    'application/xml'  => [
+                        'schema' => [
+                            'type' => 'string'
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    protected function getApiDocSchemas()
+    {
+        return [
+            'KeyValueObject' => [
+                'type'       => 'object',
+                'properties' => [
+                    '{key_name}' => [
+                        'type'        => 'string',
+                        'description' => 'Value for your key goes here. You should replace {key_name} with your key.'
+                    ]
+                ]
+            ],
+        ];
     }
 }
