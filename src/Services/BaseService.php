@@ -189,7 +189,11 @@ abstract class BaseService extends BaseRestService
         $base = [
             '/'           => [
                 'post' => [
-                    'summary'     => 'create' . $capitalized . 'Keys() - Create one or more keys in cache storage',
+                    'summary'     => 'Create one or more keys in cache storage',
+                    'description' => 'No keys will be created if any of the supplied keys exist in cache. ' .
+                        'Use PUT to replace an existing key(s). ' .
+                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.',
                     'operationId' => 'create' . $capitalized . 'Keys',
                     'parameters'  => [
                         [
@@ -211,13 +215,12 @@ abstract class BaseService extends BaseRestService
                     'responses'   => [
                         '201' => ['$ref' => '#/components/responses/Success']
                     ],
-                    'description' => 'No keys will be created if any of the supplied keys exist in cache. ' .
-                        'Use PUT to replace an existing key(s). ' .
-                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
-                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
                 ],
                 'put'  => [
-                    'summary'     => 'replace' . $capitalized . 'Keys() - Replace one or more keys in cache storage',
+                    'summary'     => 'Replace one or more keys in cache storage',
+                    'description' => 'All existing keys will be replaced by supplied keys. ' .
+                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.',
                     'operationId' => 'replace' . $capitalized . 'Keys',
                     'parameters'  => [
                         [
@@ -239,9 +242,6 @@ abstract class BaseService extends BaseRestService
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/Success']
                     ],
-                    'description' => 'All existing keys will be replaced by supplied keys. ' .
-                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
-                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
                 ]
             ],
             '/{key_name}' => [
@@ -255,7 +255,9 @@ abstract class BaseService extends BaseRestService
                     ],
                 ],
                 'get'        => [
-                    'summary'     => 'get' . $capitalized . 'Key() - Retrieve one key from cache.',
+                    'summary'     => 'Retrieve one key from cache.',
+                    'description' => 'Use the \'clear\' parameter to retrieve and forget a key from cache. ' .
+                        'Use the \'default\' parameter to return a default value if key is not found.',
                     'operationId' => 'get' . $capitalized . 'Key',
                     'parameters'  => [
                         [
@@ -275,11 +277,13 @@ abstract class BaseService extends BaseRestService
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
-                    'description' => 'Use the \'clear\' parameter to retrieve and forget a key from cache. ' .
-                        'Use the \'default\' parameter to return a default value if key is not found.'
                 ],
                 'post'       => [
-                    'summary'     => 'create' . $capitalized . 'Key() - Create one key in cache.',
+                    'summary'     => 'Create one key in cache.',
+                    'description' => 'You can only create a key if the key does not exist in cache. ' .
+                        'Use PUT to replace an existing key. ' .
+                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.',
                     'operationId' => 'create' . $capitalized . 'Key',
                     'parameters'  => [
                         [
@@ -302,13 +306,11 @@ abstract class BaseService extends BaseRestService
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
-                    'description' => 'You can only create a key if the key does not exist in cache. ' .
-                        'Use PUT to replace an existing key. ' .
-                        'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
-                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
                 ],
                 'put'        => [
-                    'summary'     => 'replace' . $capitalized . 'Key() - Replace one key from cache.',
+                    'summary'     => 'Replace one key from cache.',
+                    'description' => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.',
                     'operationId' => 'replace' . $capitalized . 'Key',
                     'parameters'  => [
                         [
@@ -331,11 +333,11 @@ abstract class BaseService extends BaseRestService
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
-                    'description' => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
-                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
                 ],
                 'patch'      => [
-                    'summary'     => 'update' . $capitalized . 'Key() - Update one key in cache.',
+                    'summary'     => 'Update one key in cache.',
+                    'description' => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
+                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.',
                     'operationId' => 'update' . $capitalized . 'Key',
                     'parameters'  => [
                         [
@@ -357,16 +359,14 @@ abstract class BaseService extends BaseRestService
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/CacheKeyResponse'],
                     ],
-                    'description' => 'Use the \'ttl\' parameter to set a Time to Live value in minutes. ' .
-                        'Use the \'forever\' parameter to store a key/value pair for indefinite time.'
                 ],
                 'delete'     => [
-                    'summary'     => 'delete' . $capitalized . 'Key() - Delete one key from cache.',
+                    'summary'     => 'Delete one key from cache.',
+                    'description' => 'You can only delete one key at a time.',
                     'operationId' => 'delete' . $capitalized . 'Key',
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/Success']
                     ],
-                    'description' => 'You can only delete one key at a time.'
                 ],
             ],
         ];
@@ -383,7 +383,7 @@ abstract class BaseService extends BaseRestService
                     'application/json' => [
                         'schema' => ['$ref' => '#/components/schemas/KeyValueObject']
                     ],
-                    'application/xml' => [
+                    'application/xml'  => [
                         'schema' => ['$ref' => '#/components/schemas/KeyValueObject']
                     ],
                 ],
@@ -394,7 +394,7 @@ abstract class BaseService extends BaseRestService
                     'application/json' => [
                         'schema' => ['type' => 'string'],
                     ],
-                    'application/xml' => [
+                    'application/xml'  => [
                         'schema' => ['type' => 'string'],
                     ],
                 ],
