@@ -1,4 +1,5 @@
 <?php
+
 namespace DreamFactory\Core\Cache\Models;
 
 use DreamFactory\Core\Models\BaseServiceConfigModel;
@@ -10,9 +11,10 @@ class MemcachedConfig extends BaseServiceConfigModel
     protected $fillable = ['service_id', 'host', 'port', 'options', 'default_ttl'];
 
     protected $casts = [
-        'service_id'     => 'integer',
-        'options'        => 'array',
-        'default_ttl'    => 'integer'
+        'service_id'  => 'integer',
+        'port'        => 'integer',
+        'options'     => 'array',
+        'default_ttl' => 'integer'
     ];
 
     /**

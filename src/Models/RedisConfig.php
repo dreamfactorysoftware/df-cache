@@ -1,4 +1,5 @@
 <?php
+
 namespace DreamFactory\Core\Cache\Models;
 
 use DreamFactory\Core\Models\BaseServiceConfigModel;
@@ -11,6 +12,7 @@ class RedisConfig extends BaseServiceConfigModel
 
     protected $casts = [
         'service_id'     => 'integer',
+        'port'           => 'integer',
         'database_index' => 'integer',
         'options'        => 'array',
         'default_ttl'    => 'integer'
