@@ -166,8 +166,11 @@ abstract class BaseService extends BaseRestService
 
         switch ($contentType) {
             case 'txt':
+            case 'text/plain':
                 return $content;
             case 'json':
+            case 'application/json':
+            case 'application/x-json':
                 if (!in_array(substr($content, 0, 1), ['{', '[']) &&
                     !in_array(substr($content, strlen($content) - 1), ['}', ']'])
                 ) {
