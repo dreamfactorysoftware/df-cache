@@ -34,7 +34,7 @@ class Redis extends BaseService
             $server['default'] = array_merge($options, $server['default']);
         }
 
-        $redisDatabase = new RedisManager(env('REDIS_CLIENT', 'predis'), $server);
+        $redisDatabase = new RedisManager(app(), env('REDIS_CLIENT', 'predis'), $server);
         $redisStore = new RedisStore($redisDatabase);
         $this->store = \Cache::repository($redisStore);
     }
