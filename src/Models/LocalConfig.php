@@ -28,7 +28,7 @@ class LocalConfig extends BaseServiceConfigModel
                 $stores = \Config::get('cache.stores');
 
                 foreach ($stores as $key => $disk) {
-                    if (substr($key, 0, 4) === 'dfe-') {
+                    if (str_starts_with($key, 'dfe-')) {
                         continue;
                     }
                     $default = false;
