@@ -19,6 +19,25 @@ abstract class BaseService extends BaseRestService
     protected $ttl = null;
 
     /**
+     * Build a cache key from a caller-supplied resource path that
+     * cannot collide with a different path differing only in the
+     * positions of `/` vs `.`.
+     *
+     * The previous implementation `str_replace('/', '.', $path)` made
+     * `/user/1` and `/user.1` collide — a tenant could read or poison
+     * another tenant's cache by crafting a colliding path. The fix
+     * uses a delimiter that cannot appear in a URL path so distinct
+     * inputs always produce distinct keys.
+     */
+    public static function buildCacheKey(string $resourcePath): string
+    {
+        // ASCII unit-separator (\x1F) is forbidden in URL paths, which
+        // means it can never appear in the input — the two forms can
+        // never round-trip to the same key.
+        return str_replace('/', "\x1F", $resourcePath);
+    }
+
+    /**
      * BaseService constructor.
      *
      * @param array $settings
@@ -51,7 +70,7 @@ abstract class BaseService extends BaseRestService
     /** {@inheritdoc} */
     protected function handleGET()
     {
-        $key = str_replace('/', '.', $this->resourcePath);
+        $key = self::buildCacheKey($this->resourcePath);
         if (empty($key)) {
             throw new BadRequestException('No key/resource provide. Please provide a cache key to retrieve.');
         }
@@ -74,7 +93,7 @@ abstract class BaseService extends BaseRestService
     /** {@inheritdoc} */
     protected function handlePUT()
     {
-        $key = str_replace('/', '.', $this->resourcePath);
+        $key = self::buildCacheKey($this->resourcePath);
         $payload = $this->getPayloadData();
         $this->ttl = $this->request->getParameter('ttl', $this->ttl);
         $forever = $this->request->getParameterAsBool('forever');
@@ -111,7 +130,7 @@ abstract class BaseService extends BaseRestService
     /** {@inheritdoc} */
     protected function handlePOST()
     {
-        $key = str_replace('/', '.', $this->resourcePath);
+        $key = self::buildCacheKey($this->resourcePath);
         $payload = $this->getPayloadData();
 
         if (!empty($key) && true === $this->store->has($key)) {
@@ -142,7 +161,7 @@ abstract class BaseService extends BaseRestService
     /** {@inheritdoc} */
     protected function handleDELETE()
     {
-        $key = str_replace('/', '.', $this->resourcePath);
+        $key = self::buildCacheKey($this->resourcePath);
         if (empty($key)) {
             throw new BadRequestException('No key/resource provide. Please provide a cache key to delete.');
         }
